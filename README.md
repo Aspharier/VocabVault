@@ -7,8 +7,6 @@ Think of it as your personal dictionary + word bank to improve your vocabulary o
 
 ## App Screenshots
 
-> *(Add screenshots once you upload them — placeholders for now)*
-
 | Home / Search | Word Details | Saved Words |
 |--------------|-------------|-------------|
 | ![VocabVault1](https://github.com/user-attachments/assets/5336188f-d12c-404c-bf93-20f6f590e45a) | ![VocabVault2](https://github.com/user-attachments/assets/97d08db6-b087-46d3-b293-934f7231f276) | ![VocabVault3](https://github.com/user-attachments/assets/65b4d5dc-d8a8-49e7-9c4b-5ed4fccd113a) |
