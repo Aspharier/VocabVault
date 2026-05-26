@@ -2,138 +2,135 @@ package com.aspharier.vocabvault.presentation.dictionary
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.ripple
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aspharier.vocabvault.domain.model.WordDefinition
+import com.aspharier.vocabvault.presentation.common.AnimationUtils
+import com.aspharier.vocabvault.presentation.components.GlassCard
+import com.aspharier.vocabvault.presentation.components.ParticleBackground
+import com.aspharier.vocabvault.presentation.theme.LocalGradientColors
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DictionaryScreen(
     viewModel: DictionaryViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var selectedWord by remember { mutableStateOf<WordDefinition?>(null) }
+    val gradientColors = LocalGradientColors.current
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { 
-                    Text(
-                        "My Dictionary",
-                        style = MaterialTheme.typography.headlineMedium
-                    ) 
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
-        }
-    ) { padding ->
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        // Background particles
+        ParticleBackground(particleCount = 6)
 
-        AnimatedVisibility(
-            visible = uiState.words.isEmpty(),
-            enter = fadeIn(animationSpec = tween(300)),
-            exit = fadeOut(animationSpec = tween(300))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding()
         ) {
-            EmptyDictionaryState(
+            // ── Header ───────────────────────────────
+            Row(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-            )
-        }
-
-        AnimatedVisibility(
-            visible = uiState.words.isNotEmpty(),
-            enter = fadeIn(animationSpec = tween(300)),
-            exit = fadeOut(animationSpec = tween(300))
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                itemsIndexed(
-                    items = uiState.words,
-                    key = { _, word -> word.word }
-                ) { index, word ->
-                    // Staggered animation for list items
-                    val animationDelay = (index * 50).coerceAtMost(300)
-                    
-                    AnimatedVisibility(
-                        visible = true,
-                        enter = fadeIn(
-                            animationSpec = tween(
-                                durationMillis = 300,
-                                delayMillis = animationDelay
-                            )
-                        ) + slideInVertically(
-                            animationSpec = tween(
-                                durationMillis = 300,
-                                delayMillis = animationDelay
-                            ),
-                            initialOffsetY = { it / 4 }
-                        )
+                Text(
+                    text = "My Vault",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                // Word count badge
+                AnimatedVisibility(
+                    visible = uiState.words.isNotEmpty(),
+                    enter = fadeIn() + scaleIn(),
+                    exit = fadeOut() + scaleOut()
+                ) {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = gradientColors.gradientStart.copy(alpha = 0.12f)
                     ) {
-                        DictionaryItem(
-                            word = word,
-                            onDelete = { viewModel.deleteWord(word.word) },
-                            onClick = { selectedWord = word }
+                        Text(
+                            text = "${uiState.words.size} words",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = gradientColors.gradientStart,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                         )
                     }
                 }
             }
+
+            // ── Content ──────────────────────────────
+            AnimatedContent(
+                targetState = uiState.words.isEmpty(),
+                transitionSpec = {
+                    fadeIn(tween(300)) togetherWith fadeOut(tween(200))
+                },
+                label = "dictionary_content"
+            ) { isEmpty ->
+                if (isEmpty) {
+                    EmptyDictionaryState(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 20.dp)
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(
+                            top = 4.dp,
+                            bottom = 100.dp
+                        )
+                    ) {
+                        itemsIndexed(
+                            items = uiState.words,
+                            key = { _, word -> word.word }
+                        ) { index, word ->
+                            DictionaryItem(
+                                word = word,
+                                index = index,
+                                onDelete = { viewModel.deleteWord(word.word) },
+                                onClick = { selectedWord = word }
+                            )
+                        }
+                    }
+                }
+            }
         }
-        
-        // Show dialog when a word is selected
+
+        // Word detail dialog
         selectedWord?.let { word ->
             WordDetailDialog(
                 word = word,
@@ -146,78 +143,117 @@ fun DictionaryScreen(
 @Composable
 fun DictionaryItem(
     word: WordDefinition,
+    index: Int,
     onDelete: () -> Unit,
     onClick: () -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    
-    ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(
-                interactionSource = interactionSource,
-                indication = ripple(),
-                onClick = onClick
-            ),
-        shape = MaterialTheme.shapes.large,
-        elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 2.dp,
-            pressedElevation = 4.dp
+    val gradientColors = LocalGradientColors.current
+
+    // Staggered entrance animation
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { visible = true }
+
+    val delay = AnimationUtils.staggerDelay(index)
+
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(
+            tween(AnimationUtils.DURATION_MEDIUM, delayMillis = delay)
+        ) + slideInVertically(
+            tween(AnimationUtils.DURATION_MEDIUM, delayMillis = delay),
+            initialOffsetY = { it / 3 }
         )
     ) {
         Row(
             modifier = Modifier
-                .padding(20.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(18.dp))
+                .background(gradientColors.glassBackground)
+                .border(
+                    width = 1.dp,
+                    color = gradientColors.glassBorder,
+                    shape = RoundedCornerShape(18.dp)
+                )
         ) {
+            // Gradient accent strip
+            Box(
+                modifier = Modifier
+                    .width(4.dp)
+                    .height(IntrinsicSize.Max)
+                    .defaultMinSize(minHeight = 70.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                gradientColors.gradientStart,
+                                gradientColors.gradientEnd
+                            )
+                        )
+                    )
+            )
+
             Row(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Icon indicator
-                Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
-                )
-                
-                Spacer(modifier = Modifier.width(16.dp))
-                
                 Column(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 12.dp)
                 ) {
-                    Text(
-                        text = word.word,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    // Clickable word title
+                    TextButton(
+                        onClick = onClick,
+                        contentPadding = PaddingValues(0.dp)
+                    ) {
+                        Text(
+                            text = word.word,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    // Part of speech badge
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = gradientColors.gradientStart.copy(alpha = 0.08f),
+                        modifier = Modifier.padding(top = 2.dp)
+                    ) {
+                        Text(
+                            text = word.partOfSpeech,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = gradientColors.gradientStart.copy(alpha = 0.8f),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
                     Text(
                         text = word.definition,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-            }
 
-            Spacer(modifier = Modifier.width(8.dp))
-
-            IconButton(
-                onClick = onDelete,
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete",
-                    tint = MaterialTheme.colorScheme.error
-                )
+                // Delete button
+                IconButton(
+                    onClick = onDelete,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete",
+                        tint = MaterialTheme.colorScheme.error.copy(alpha = 0.7f),
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
         }
     }
@@ -227,17 +263,28 @@ fun DictionaryItem(
 fun EmptyDictionaryState(
     modifier: Modifier = Modifier
 ) {
-    // Animated empty state
-    val infiniteTransition = rememberInfiniteTransition(label = "empty_state")
-    
+    val gradientColors = LocalGradientColors.current
+
+    val infiniteTransition = rememberInfiniteTransition(label = "empty_vault")
+
     val scale by infiniteTransition.animateFloat(
         initialValue = 1f,
-        targetValue = 1.1f,
+        targetValue = 1.08f,
         animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = FastOutSlowInEasing),
+            animation = tween(2500, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
-        label = "icon_scale"
+        label = "vault_scale"
+    )
+
+    val iconAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.2f,
+        targetValue = 0.35f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2500, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "vault_alpha"
     )
 
     Box(
@@ -249,25 +296,29 @@ fun EmptyDictionaryState(
             modifier = Modifier.padding(32.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Star,
+                imageVector = Icons.Outlined.Star,
                 contentDescription = null,
                 modifier = Modifier
                     .size(80.dp)
                     .scale(scale),
-                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                tint = gradientColors.gradientStart.copy(alpha = iconAlpha)
             )
+
             Spacer(modifier = Modifier.height(24.dp))
+
             Text(
-                text = "No words saved yet",
+                text = "Your vault is empty",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
             )
-            Spacer(modifier = Modifier.height(12.dp))
+
+            Spacer(modifier = Modifier.height(10.dp))
+
             Text(
-                text = "Search and save words to build your vocabulary",
+                text = "Search and save words to build\nyour personal vocabulary collection",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                textAlign = TextAlign.Center
             )
         }
     }
@@ -278,6 +329,8 @@ fun WordDetailDialog(
     word: WordDefinition,
     onDismiss: () -> Unit
 ) {
+    val gradientColors = LocalGradientColors.current
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -286,98 +339,123 @@ fun WordDetailDialog(
             usePlatformDefaultWidth = false
         )
     ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth(0.9f),
-            shape = MaterialTheme.shapes.extraLarge,
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 8.dp
+        // Scale-in animation
+        var visible by remember { mutableStateOf(false) }
+        LaunchedEffect(Unit) { visible = true }
+
+        AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn(tween(200)) + scaleIn(
+                tween(300),
+                initialScale = 0.85f
             )
         ) {
-            Column(
+            Box(
                 modifier = Modifier
-                    .padding(28.dp)
+                    .fillMaxWidth(0.9f)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(gradientColors.glassBackground)
+                    .border(
+                        width = 1.dp,
+                        color = gradientColors.glassBorder,
+                        shape = RoundedCornerShape(24.dp)
+                    )
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.95f))
             ) {
-                // Word title
-                Text(
-                    text = word.word,
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
-                
-                // Phonetic if available
-                word.phonetic?.let { phonetic ->
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = phonetic,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.Light
-                    )
-                }
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                HorizontalDivider(
-                    modifier = Modifier.width(80.dp),
-                    thickness = 3.dp,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                
-                Spacer(modifier = Modifier.height(20.dp))
-                
-                // Part of speech
-                Text(
-                    text = "Part of Speech",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.SemiBold
-                )
-                
-                Spacer(modifier = Modifier.height(6.dp))
-                
-                Text(
-                    text = word.partOfSpeech,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                
-                Spacer(modifier = Modifier.height(20.dp))
-                
-                // Definition
-                Text(
-                    text = "Definition",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.SemiBold
-                )
-                
-                Spacer(modifier = Modifier.height(6.dp))
-                
-                Text(
-                    text = word.definition,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    lineHeight = 1.4.em
-                )
-                
-                Spacer(modifier = Modifier.height(24.dp))
-                
-                // Close button
-                TextButton(
-                    onClick = onDismiss,
-                    shape = MaterialTheme.shapes.medium,
-                    modifier = Modifier.align(Alignment.End)
+                Column(
+                    modifier = Modifier.padding(28.dp)
                 ) {
+                    // Word title
                     Text(
-                        "Close",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary
+                        text = word.word,
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = gradientColors.gradientStart,
+                        fontWeight = FontWeight.Bold
                     )
+
+                    // Phonetic
+                    word.phonetic?.let { phonetic ->
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = phonetic,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                            fontWeight = FontWeight.Light
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // Gradient divider
+                    Box(
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(3.dp)
+                            .background(
+                                Brush.horizontalGradient(
+                                    colors = listOf(
+                                        gradientColors.gradientStart,
+                                        gradientColors.gradientEnd
+                                    )
+                                )
+                            )
+                    )
+
+                    Spacer(modifier = Modifier.height(22.dp))
+
+                    // Part of speech
+                    Text(
+                        text = "Part of Speech",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = gradientColors.gradientStart.copy(alpha = 0.1f)
+                    ) {
+                        Text(
+                            text = word.partOfSpeech,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = gradientColors.gradientStart,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(22.dp))
+
+                    // Definition
+                    Text(
+                        text = "Definition",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Text(
+                        text = word.definition,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        lineHeight = 1.5.em
+                    )
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // Close button
+                    TextButton(
+                        onClick = onDismiss,
+                        shape = MaterialTheme.shapes.medium,
+                        modifier = Modifier.align(Alignment.End)
+                    ) {
+                        Text(
+                            "Close",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = gradientColors.gradientStart
+                        )
+                    }
                 }
             }
         }

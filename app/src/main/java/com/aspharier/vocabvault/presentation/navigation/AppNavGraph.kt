@@ -6,20 +6,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.aspharier.vocabvault.presentation.dictionary.DictionaryScreen
 import com.aspharier.vocabvault.presentation.home.HomeScreen
+import com.aspharier.vocabvault.presentation.settings.SettingsScreen
 
 @Composable
 fun AppNavGraph() {
     val navController = rememberNavController()
 
     Scaffold(
-       bottomBar = {
-           BottomNavBar(navController)
-       }
+        bottomBar = {
+            BottomNavBar(navController)
+        },
+        containerColor = Color.Transparent
     ) { padding ->
 
         NavHost(
@@ -27,28 +30,24 @@ fun AppNavGraph() {
             startDestination = BottomNavItem.Home.route,
             modifier = Modifier.padding(padding),
             enterTransition = {
-                slideIntoContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(300)
-                ) + fadeIn(animationSpec = tween(300))
+                fadeIn(animationSpec = tween(300)) + slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Up,
+                    animationSpec = tween(300),
+                    initialOffset = { it / 10 }
+                )
             },
             exitTransition = {
-                slideOutOfContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(300)
-                ) + fadeOut(animationSpec = tween(300))
+                fadeOut(animationSpec = tween(250))
             },
             popEnterTransition = {
-                slideIntoContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(300)
-                ) + fadeIn(animationSpec = tween(300))
+                fadeIn(animationSpec = tween(300))
             },
             popExitTransition = {
-                slideOutOfContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(300)
-                ) + fadeOut(animationSpec = tween(300))
+                fadeOut(animationSpec = tween(250)) + slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Down,
+                    animationSpec = tween(250),
+                    targetOffset = { it / 10 }
+                )
             }
         ) {
             composable(BottomNavItem.Home.route) {
@@ -56,6 +55,9 @@ fun AppNavGraph() {
             }
             composable(BottomNavItem.Dictionary.route) {
                 DictionaryScreen()
+            }
+            composable(BottomNavItem.Settings.route) {
+                SettingsScreen()
             }
         }
     }

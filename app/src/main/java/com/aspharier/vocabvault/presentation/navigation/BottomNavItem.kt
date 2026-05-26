@@ -3,6 +3,7 @@ package com.aspharier.vocabvault.presentation.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class BottomNavItem (
@@ -18,7 +19,13 @@ sealed class BottomNavItem (
 
     object Dictionary : BottomNavItem(
         route = "dictionary",
-        label = "Dictionary",
+        label = "Vault",
         icon = Icons.Default.Star
+    )
+
+    object Settings : BottomNavItem(
+        route = "settings",
+        label = "Settings",
+        icon = Icons.Default.Settings
     )
 }
