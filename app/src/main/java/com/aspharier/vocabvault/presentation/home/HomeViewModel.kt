@@ -2,6 +2,7 @@ package com.aspharier.vocabvault.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aspharier.vocabvault.data.local.ThemePreferences
 import com.aspharier.vocabvault.data.remote.api.DictionaryApi
 import com.aspharier.vocabvault.data.remote.dto.WordResponseDto
 import com.aspharier.vocabvault.domain.model.WordDefinition
@@ -17,13 +18,22 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val api: DictionaryApi,
-    private val repository: WordRepository
+    private val repository: WordRepository,
+    private val preferences: ThemePreferences
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
 
     private val _eventFlow = MutableSharedFlow<HomeUiEvent>()
     val eventFlow = _eventFlow
+
+    init {
+        viewModelScope.launch {
+            preferences.getRecentSearches().collect { searches ->
+                _uiState.update { it.copy(recentSearches = searches) }
+            }
+        }
+    }
 
     fun onSearchQueryChange(query: String) {
         _uiState.update {
@@ -32,21 +42,30 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onSearchClicked() {
-        // API call
         val word = uiState.value.searchQuery.trim()
         if(word.isEmpty()) return
+        searchWord(word)
+    }
 
+    fun onRecentSearchClicked(word: String) {
+        _uiState.update { it.copy(searchQuery = word) }
+        searchWord(word)
+    }
+
+    private fun searchWord(word: String) {
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
                     isLoading = true,
-                    errorMessage = null
+                    errorMessage = null,
+                    wordResult = null
                 )
             }
             try {
                 val dto = api.getWordDefinition(word).first()
                 val domainWord = mapToDomain(dto)
                 val saved = repository.isWordSaved(domainWord.word)
+                preferences.addRecentSearch(domainWord.word)
 
                 _uiState.update {
                     it.copy(

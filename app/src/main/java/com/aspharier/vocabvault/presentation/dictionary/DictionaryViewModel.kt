@@ -2,6 +2,7 @@ package com.aspharier.vocabvault.presentation.dictionary
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aspharier.vocabvault.domain.model.WordDefinition
 import com.aspharier.vocabvault.domain.repository.WordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,14 +25,28 @@ class DictionaryViewModel @Inject constructor(
     private fun observeSavedWords() {
         viewModelScope.launch {
             repository.getSavedWords().collectLatest { words ->
-                _uiState.value = DictionaryUiState(words)
+                _uiState.value = _uiState.value.copy(words = words)
             }
         }
+    }
+
+    fun onSearchQueryChange(query: String) {
+        _uiState.value = _uiState.value.copy(searchQuery = query)
+    }
+
+    fun onSortModeChange(sortMode: VaultSortMode) {
+        _uiState.value = _uiState.value.copy(sortMode = sortMode)
     }
 
     fun deleteWord(word: String) {
         viewModelScope.launch {
             repository.deleteWord(word)
+        }
+    }
+
+    fun restoreWord(word: WordDefinition) {
+        viewModelScope.launch {
+            repository.saveWord(word)
         }
     }
 }

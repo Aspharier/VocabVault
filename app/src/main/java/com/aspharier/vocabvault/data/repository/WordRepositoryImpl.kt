@@ -29,11 +29,12 @@ class WordRepositoryImpl @Inject constructor(
             list.map {
                 WordDefinition(
                     word = it.word,
-                    phonetic = it.phonetic,
-                    partOfSpeech = it.partOfSpeech,
-                    definition = it.definition
-                )
-            }
+                phonetic = it.phonetic,
+                partOfSpeech = it.partOfSpeech,
+                definition = it.definition,
+                savedAt = it.savedAt
+            )
+        }
         }
 
     override suspend fun deleteWord(word: String) {

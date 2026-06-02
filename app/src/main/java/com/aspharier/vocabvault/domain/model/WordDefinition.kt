@@ -4,5 +4,6 @@ data class WordDefinition(
     val word: String,
     val phonetic: String?,
     val partOfSpeech: String,
-    val definition: String
+    val definition: String,
+    val savedAt: Long = 0L
 )

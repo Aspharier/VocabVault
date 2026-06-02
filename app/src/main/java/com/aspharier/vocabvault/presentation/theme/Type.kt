@@ -19,13 +19,13 @@ val AppTypography = Typography(
         fontFamily = Poppins,
         fontWeight = FontWeight.Bold,
         fontSize = 34.sp,
-        letterSpacing = (-0.5).sp
+        letterSpacing = 0.sp
     ),
     displayMedium = TextStyle(
         fontFamily = Poppins,
         fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
-        letterSpacing = (-0.25).sp
+        letterSpacing = 0.sp
     ),
     displaySmall = TextStyle(
         fontFamily = Poppins,
@@ -37,7 +37,7 @@ val AppTypography = Typography(
         fontFamily = Poppins,
         fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
-        letterSpacing = (-0.25).sp
+        letterSpacing = 0.sp
     ),
     headlineMedium = TextStyle(
         fontFamily = Poppins,
