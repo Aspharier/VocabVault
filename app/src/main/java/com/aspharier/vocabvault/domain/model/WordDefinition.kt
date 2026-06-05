@@ -5,5 +5,8 @@ data class WordDefinition(
     val phonetic: String?,
     val partOfSpeech: String,
     val definition: String,
-    val savedAt: Long = 0L
+    val savedAt: Long = 0L,
+    val leitnerBox: Int = 1,
+    val nextReviewAt: Long = 0L,
+    val lastReviewedAt: Long = 0L
 )

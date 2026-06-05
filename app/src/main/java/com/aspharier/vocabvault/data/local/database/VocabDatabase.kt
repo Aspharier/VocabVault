@@ -7,7 +7,7 @@ import com.aspharier.vocabvault.data.local.entities.SavedWordEntity
 
 @Database(
     entities = [SavedWordEntity::class],
-    version = 1
+    version = 2
 )
 abstract class VocabDatabase : RoomDatabase() {
     abstract fun savedWordDao(): SavedWordDao

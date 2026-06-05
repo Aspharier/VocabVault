@@ -12,4 +12,14 @@ interface WordRepository {
     suspend fun deleteWord(word: String)
 
     suspend fun isWordSaved(word: String): Boolean
+
+    fun getWordsDueForReview(currentTime: Long): Flow<List<WordDefinition>>
+
+    suspend fun updateLeitnerState(word: String, newBox: Int, nextReview: Long, lastReviewed: Long)
+
+    fun getWordsDueForReviewCount(currentTime: Long): Flow<Int>
+
+    fun getTotalWordsCount(): Flow<Int>
+
+    fun getMasteredWordsCount(): Flow<Int>
 }

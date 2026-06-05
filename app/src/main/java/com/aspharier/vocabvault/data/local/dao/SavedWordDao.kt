@@ -21,4 +21,19 @@ interface SavedWordDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM saved_words WHERE word = :word)")
     suspend fun isWordSaved(word: String): Boolean
+
+    @Query("SELECT * FROM saved_words WHERE nextReviewAt <= :currentTime AND leitnerBox < 4 ORDER BY savedAt ASC")
+    fun getWordsDueForReview(currentTime: Long): Flow<List<SavedWordEntity>>
+
+    @Query("UPDATE saved_words SET leitnerBox = :newBox, nextReviewAt = :nextReview, lastReviewedAt = :lastReviewed WHERE word = :word")
+    suspend fun updateLeitnerState(word: String, newBox: Int, nextReview: Long, lastReviewed: Long)
+
+    @Query("SELECT COUNT(*) FROM saved_words WHERE nextReviewAt <= :currentTime AND leitnerBox < 4")
+    fun getWordsDueForReviewCount(currentTime: Long): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM saved_words")
+    fun getTotalWordsCount(): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM saved_words WHERE leitnerBox = 4")
+    fun getMasteredWordsCount(): Flow<Int>
 }

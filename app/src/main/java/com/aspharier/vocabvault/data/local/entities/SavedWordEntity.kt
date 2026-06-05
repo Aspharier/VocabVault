@@ -9,5 +9,8 @@ data class SavedWordEntity(
     val phonetic: String?,
     val partOfSpeech: String,
     val definition: String,
-    val savedAt: Long
+    val savedAt: Long,
+    val leitnerBox: Int = 1,
+    val nextReviewAt: Long = 0L,
+    val lastReviewedAt: Long = 0L
 )

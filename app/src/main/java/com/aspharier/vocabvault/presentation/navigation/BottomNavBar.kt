@@ -46,6 +46,8 @@ fun BottomNavBar(
 ) {
     val items = listOf(
         BottomNavItem.Home,
+        BottomNavItem.Search,
+        BottomNavItem.Learn,
         BottomNavItem.Dictionary,
         BottomNavItem.Settings
     )
@@ -59,7 +61,7 @@ fun BottomNavBar(
     }
 
     val selectedIndex = items.indexOfFirst { it.route == animatedRoute }.coerceAtLeast(0)
-    val itemWidth = 86.dp
+    val itemWidth = 58.dp
     val indicatorOffset by animateDpAsState(
         targetValue = itemWidth * selectedIndex,
         animationSpec = tween(
@@ -79,9 +81,9 @@ fun BottomNavBar(
         Surface(
             modifier = Modifier
                 .width(itemWidth * items.size)
-                .height(66.dp),
-            shape = RoundedCornerShape(33.dp),
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.78f),
+                .height(60.dp),
+            shape = RoundedCornerShape(30.dp),
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.82f),
             tonalElevation = 8.dp,
             shadowElevation = 14.dp
         ) {
@@ -91,10 +93,10 @@ fun BottomNavBar(
                         .offset(x = indicatorOffset)
                         .padding(6.dp)
                         .width(itemWidth - 12.dp)
-                        .height(54.dp)
+                        .height(48.dp)
                         .background(
                             color = MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(28.dp)
+                            shape = RoundedCornerShape(24.dp)
                         )
                 )
 
@@ -114,20 +116,12 @@ fun BottomNavBar(
                             ),
                             label = "${item.route}_scale"
                         )
-                        val labelAlpha by animateFloatAsState(
-                            targetValue = if (selected) 1f else 0.68f,
-                            animationSpec = tween(
-                                durationMillis = 220,
-                                delayMillis = if (selected) 90 else 0
-                            ),
-                            label = "${item.route}_alpha"
-                        )
                         val interactionSource = remember { MutableInteractionSource() }
 
                         Column(
                             modifier = Modifier
                                 .width(itemWidth)
-                                .height(66.dp)
+                                .height(60.dp)
                                 .clickable(
                                     interactionSource = interactionSource,
                                     indication = null
@@ -159,15 +153,6 @@ fun BottomNavBar(
                                 modifier = Modifier
                                     .size(22.dp)
                                     .scale(iconScale)
-                            )
-                            Text(
-                                text = item.label,
-                                color = if (selected) {
-                                    MaterialTheme.colorScheme.onPrimary.copy(alpha = labelAlpha)
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = labelAlpha)
-                                },
-                                style = MaterialTheme.typography.labelSmall
                             )
                         }
                     }
