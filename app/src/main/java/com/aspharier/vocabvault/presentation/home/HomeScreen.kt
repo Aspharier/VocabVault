@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -136,29 +137,59 @@ fun HomeScreen(
                         )
                     }
 
-                    // Streak Badge
-                    Surface(
-                        color = Color(0xFFFEF3C7),
-                        contentColor = Color(0xFFD97706),
-                        shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.clickable { }
+                    // Streaks & XP Badges side-by-side
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        // Streak Badge
+                        Surface(
+                            color = Color(0xFFFEF3C7),
+                            contentColor = Color(0xFFD97706),
+                            shape = RoundedCornerShape(16.dp)
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Favorite,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                                tint = Color(0xFFD97706)
-                            )
-                            Text(
-                                text = uiState.streakCount.toString(),
-                                style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.Bold
-                            )
+                            Row(
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Favorite,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(14.dp),
+                                    tint = Color(0xFFD97706)
+                                )
+                                Text(
+                                    text = uiState.streakCount.toString(),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+
+                        // XP Badge
+                        Surface(
+                            color = Color(0xFFE0F2FE),
+                            contentColor = Color(0xFF0284C7),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Star,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(14.dp),
+                                    tint = Color(0xFF0284C7)
+                                )
+                                Text(
+                                    text = "${uiState.xpCount} XP",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 }
@@ -180,12 +211,12 @@ fun HomeScreen(
                             fontWeight = FontWeight.Bold
                         )
                         LinearProgressIndicator(
-                            progress = { 0.6f },
+                            progress = { uiState.challengeProgress },
                             modifier = Modifier.fillMaxWidth().height(6.dp),
                             strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
                         )
                         Text(
-                            text = "Learn 2 more words to complete today's mission!",
+                            text = uiState.challengeStatus,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -402,6 +433,7 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .statusBarsPadding()
                     .align(Alignment.TopCenter)
             ) {
                 androidx.compose.animation.AnimatedVisibility(
