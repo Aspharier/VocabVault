@@ -14,6 +14,8 @@ val DMMono = FontFamily(
     Font(R.font.dmmono_light, FontWeight.Light),
 )
 
+val SerifFont = FontFamily.Serif
+
 val AppTypography = Typography(
     displayLarge = TextStyle(
         fontFamily = DMMono,

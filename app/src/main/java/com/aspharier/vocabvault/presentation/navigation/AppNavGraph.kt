@@ -1,5 +1,8 @@
 package com.aspharier.vocabvault.presentation.navigation
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -9,10 +12,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.aspharier.vocabvault.presentation.dictionary.DictionaryScreen
-import com.aspharier.vocabvault.presentation.home.HomeScreen
-import com.aspharier.vocabvault.presentation.settings.SettingsScreen
 import com.aspharier.vocabvault.presentation.search.SearchScreen
-import com.aspharier.vocabvault.presentation.learn.LearnScreen
+import com.aspharier.vocabvault.presentation.settings.SettingsScreen
 
 @Composable
 fun AppNavGraph() {
@@ -21,27 +22,15 @@ fun AppNavGraph() {
     Box(modifier = Modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
-            startDestination = BottomNavItem.Home.route,
-            modifier = Modifier.fillMaxSize()
+            startDestination = BottomNavItem.Search.route,
+            modifier = Modifier.fillMaxSize(),
+            enterTransition = { fadeIn(animationSpec = tween(220)) },
+            exitTransition = { fadeOut(animationSpec = tween(220)) }
         ) {
-            composable(BottomNavItem.Home.route) {
-                HomeScreen(onNavigateToLearn = {
-                    navController.navigate(BottomNavItem.Learn.route) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                })
-            }
             composable(BottomNavItem.Search.route) {
                 SearchScreen()
             }
-            composable(BottomNavItem.Learn.route) {
-                LearnScreen()
-            }
-            composable(BottomNavItem.Dictionary.route) {
+            composable(BottomNavItem.Vault.route) {
                 DictionaryScreen()
             }
             composable(BottomNavItem.Settings.route) {
@@ -50,8 +39,7 @@ fun AppNavGraph() {
         }
 
         Box(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
             BottomNavBar(navController)

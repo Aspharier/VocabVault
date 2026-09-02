@@ -2,7 +2,6 @@ package com.aspharier.vocabvault.presentation.navigation
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -19,142 +17,139 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.aspharier.vocabvault.presentation.dictionary.DictionaryViewModel
+import com.aspharier.vocabvault.presentation.theme.DMMono
+import com.aspharier.vocabvault.presentation.theme.VocabTheme
 
 @Composable
 fun BottomNavBar(
-    navController: NavController
+    navController: NavController,
+    dictionaryViewModel: DictionaryViewModel = hiltViewModel()
 ) {
     val items = listOf(
-        BottomNavItem.Home,
         BottomNavItem.Search,
-        BottomNavItem.Learn,
-        BottomNavItem.Dictionary,
+        BottomNavItem.Vault,
         BottomNavItem.Settings
     )
-    val scope = rememberCoroutineScope()
+
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = backStackEntry?.destination?.route ?: BottomNavItem.Home.route
-    var animatedRoute by remember { mutableStateOf(currentRoute) }
+    val currentRoute = backStackEntry?.destination?.route ?: BottomNavItem.Search.route
 
-    LaunchedEffect(currentRoute) {
-        animatedRoute = currentRoute
-    }
+    val dictUiState by dictionaryViewModel.uiState.collectAsState()
+    val vaultCount = dictUiState.words.size
 
-    val selectedIndex = items.indexOfFirst { it.route == animatedRoute }.coerceAtLeast(0)
-    val itemWidth = 58.dp
-    val indicatorOffset by animateDpAsState(
-        targetValue = itemWidth * selectedIndex,
-        animationSpec = tween(
-            durationMillis = 360,
-            easing = FastOutSlowInEasing
-        ),
-        label = "floating_nav_indicator"
-    )
+    val colors = VocabTheme.colors
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .navigationBarsPadding()
-            .padding(horizontal = 22.dp, vertical = 14.dp),
-        contentAlignment = Alignment.Center
+            .background(colors.bg)
     ) {
-        Surface(
+        // Hairline top border
+        Box(
             modifier = Modifier
-                .width(itemWidth * items.size)
-                .height(60.dp),
-            shape = RoundedCornerShape(30.dp),
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.82f),
-            tonalElevation = 8.dp,
-            shadowElevation = 14.dp
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(colors.rule)
+                .align(Alignment.TopCenter)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(top = 1.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Box(
-                    modifier = Modifier
-                        .offset(x = indicatorOffset)
-                        .padding(6.dp)
-                        .width(itemWidth - 12.dp)
-                        .height(48.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(24.dp)
-                        )
+            items.forEach { item ->
+                val selected = item.route == currentRoute
+                val interactionSource = remember { MutableInteractionSource() }
+
+                val indicatorWidth by animateDpAsState(
+                    targetValue = if (selected) 34.dp else 0.dp,
+                    animationSpec = tween(durationMillis = 220, easing = FastOutSlowInEasing),
+                    label = "nav_tab_indicator_${item.route}"
                 )
 
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    items.forEach { item ->
-                        val selected = item.route == animatedRoute
-                        val iconScale by animateFloatAsState(
-                            targetValue = if (selected) 1.08f else 0.94f,
-                            animationSpec = tween(
-                                durationMillis = 240,
-                                delayMillis = if (selected) 70 else 0,
-                                easing = FastOutSlowInEasing
-                            ),
-                            label = "${item.route}_scale"
-                        )
-                        val interactionSource = remember { MutableInteractionSource() }
-
-                        Column(
-                            modifier = Modifier
-                                .width(itemWidth)
-                                .height(60.dp)
-                                .clickable(
-                                    interactionSource = interactionSource,
-                                    indication = null
-                                ) {
-                                    if (item.route == currentRoute) return@clickable
-                                    animatedRoute = item.route
-                                    scope.launch {
-                                        delay(150)
-                                        navController.navigate(item.route) {
-                                            popUpTo(navController.graph.startDestinationId) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-                                    }
-                                },
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null
                         ) {
+                            if (item.route != currentRoute) {
+                                navController.navigate(item.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        },
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    // Active hairline indicator bar on top
+                    Box(
+                        modifier = Modifier
+                            .width(indicatorWidth)
+                            .height(1.dp)
+                            .background(colors.accent)
+                    )
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 13.dp, bottom = 12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 imageVector = item.icon,
                                 contentDescription = item.label,
-                                tint = if (selected) {
-                                    MaterialTheme.colorScheme.onPrimary
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                },
-                                modifier = Modifier
-                                    .size(22.dp)
-                                    .scale(iconScale)
+                                tint = if (selected) colors.ink else colors.ink3,
+                                modifier = Modifier.size(19.dp)
                             )
+
+                            // Word count badge on Vault
+                            if (item == BottomNavItem.Vault && vaultCount > 0) {
+                                Text(
+                                    text = "$vaultCount",
+                                    fontFamily = DMMono,
+                                    fontSize = 8.5.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = colors.accent,
+                                    modifier = Modifier.offset(x = 16.dp, y = (-7).dp)
+                                )
+                            }
                         }
+
+                        Text(
+                            text = item.label.uppercase(),
+                            fontFamily = DMMono,
+                            fontSize = 9.sp,
+                            letterSpacing = 0.14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = if (selected) colors.ink else colors.ink3,
+                            modifier = Modifier.padding(top = 5.dp)
+                        )
                     }
                 }
             }

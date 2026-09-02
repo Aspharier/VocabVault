@@ -1,158 +1,61 @@
 package com.aspharier.vocabvault.ui.theme
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
-// ─────────────────────────────────────────────
-// 1. OBSIDIAN DARK — AMOLED deep dark + violet
-// ─────────────────────────────────────────────
-val obsidian_primary = Color(0xFFA78BFA)
-val obsidian_onPrimary = Color(0xFF1A0A3E)
-val obsidian_primaryContainer = Color(0xFF2D1B69)
-val obsidian_onPrimaryContainer = Color(0xFFE8DEFF)
-val obsidian_secondary = Color(0xFF818CF8)
-val obsidian_onSecondary = Color(0xFF1A1A4E)
-val obsidian_secondaryContainer = Color(0xFF2D2D69)
-val obsidian_onSecondaryContainer = Color(0xFFDEE0FF)
-val obsidian_tertiary = Color(0xFFF0ABFC)
-val obsidian_onTertiary = Color(0xFF3E1A4E)
-val obsidian_tertiaryContainer = Color(0xFF5C2D69)
-val obsidian_onTertiaryContainer = Color(0xFFFDE8FF)
-val obsidian_error = Color(0xFFFF6B6B)
-val obsidian_onError = Color(0xFF3E0A0A)
-val obsidian_errorContainer = Color(0xFF5C1A1A)
-val obsidian_onErrorContainer = Color(0xFFFFDEDE)
-val obsidian_background = Color(0xFF0A0A0F)
-val obsidian_onBackground = Color(0xFFE8E6F0)
-val obsidian_surface = Color(0xFF12121A)
-val obsidian_onSurface = Color(0xFFE8E6F0)
-val obsidian_surfaceVariant = Color(0xFF1E1E2E)
-val obsidian_onSurfaceVariant = Color(0xFFB0AEC0)
-val obsidian_outline = Color(0xFF3A3850)
-val obsidian_outlineVariant = Color(0xFF2A283A)
-val obsidian_surfaceContainer = Color(0xFF181822)
-val obsidian_gradientStart = Color(0xFFA78BFA)
-val obsidian_gradientEnd = Color(0xFF818CF8)
+/**
+ * Editorial color palette tokens directly from vocabvault-ui.html
+ */
+@Immutable
+data class VocabColors(
+    val bg: Color,
+    val bgSunken: Color,
+    val raise: Color,
+    val ink: Color,
+    val ink2: Color,
+    val ink3: Color,
+    val rule: Color,
+    val rule2: Color,
+    val accent: Color,
+    val accentInk: Color,
+    val accentWash: Color,
+    val danger: Color,
+    val sel: Color,
+    val isDark: Boolean
+)
 
-// ─────────────────────────────────────────────
-// 2. ARCTIC FROST — Clean, bright, icy slate
-// ─────────────────────────────────────────────
-val arctic_primary = Color(0xFF6366F1)
-val arctic_onPrimary = Color(0xFFFFFFFF)
-val arctic_primaryContainer = Color(0xFFE0E0FF)
-val arctic_onPrimaryContainer = Color(0xFF1A1A5C)
-val arctic_secondary = Color(0xFF818CF8)
-val arctic_onSecondary = Color(0xFFFFFFFF)
-val arctic_secondaryContainer = Color(0xFFE8EAFF)
-val arctic_onSecondaryContainer = Color(0xFF1D1F52)
-val arctic_tertiary = Color(0xFFA78BFA)
-val arctic_onTertiary = Color(0xFFFFFFFF)
-val arctic_tertiaryContainer = Color(0xFFF0E8FF)
-val arctic_onTertiaryContainer = Color(0xFF2D1A52)
-val arctic_error = Color(0xFFDC2626)
-val arctic_onError = Color(0xFFFFFFFF)
-val arctic_errorContainer = Color(0xFFFEE2E2)
-val arctic_onErrorContainer = Color(0xFF5C0A0A)
-val arctic_background = Color(0xFFF8FAFC)
-val arctic_onBackground = Color(0xFF0F172A)
-val arctic_surface = Color(0xFFFFFFFF)
-val arctic_onSurface = Color(0xFF0F172A)
-val arctic_surfaceVariant = Color(0xFFF1F5F9)
-val arctic_onSurfaceVariant = Color(0xFF475569)
-val arctic_outline = Color(0xFFCBD5E1)
-val arctic_outlineVariant = Color(0xFFE2E8F0)
-val arctic_surfaceContainer = Color(0xFFF1F5F9)
-val arctic_gradientStart = Color(0xFF6366F1)
-val arctic_gradientEnd = Color(0xFF818CF8)
+// Dark: near-black ink field, warm parchment accent
+val DarkVocabColors = VocabColors(
+    bg = Color(0xFF0D0D0F),
+    bgSunken = Color(0xFF08080A),
+    raise = Color(0xFF141417),
+    ink = Color(0xFFF2F0EC),
+    ink2 = Color(0xFFA4A29C),
+    ink3 = Color(0xFF6A6862),
+    rule = Color(0xFF232327),
+    rule2 = Color(0xFF2F2F34),
+    accent = Color(0xFFD9A95F),
+    accentInk = Color(0xFF1A1408),
+    accentWash = Color(0x21D9A95F), // rgba(217,169,95,.13)
+    danger = Color(0xFFE0705F),
+    sel = Color(0x38D9A95F),        // rgba(217,169,95,.22)
+    isDark = true
+)
 
-// ─────────────────────────────────────────────
-// 3. CYBER NEON — Cyberpunk glow
-// ─────────────────────────────────────────────
-val cyber_primary = Color(0xFF06D6A0)
-val cyber_onPrimary = Color(0xFF003322)
-val cyber_primaryContainer = Color(0xFF0A3D2E)
-val cyber_onPrimaryContainer = Color(0xFFB8FFE8)
-val cyber_secondary = Color(0xFF9B5DE5)
-val cyber_onSecondary = Color(0xFF1A0A3E)
-val cyber_secondaryContainer = Color(0xFF2D1569)
-val cyber_onSecondaryContainer = Color(0xFFE8D5FF)
-val cyber_tertiary = Color(0xFFFF6B9D)
-val cyber_onTertiary = Color(0xFF3E0A1E)
-val cyber_tertiaryContainer = Color(0xFF5C152E)
-val cyber_onTertiaryContainer = Color(0xFFFFDEE8)
-val cyber_error = Color(0xFFFF4757)
-val cyber_onError = Color(0xFF3E0A0F)
-val cyber_errorContainer = Color(0xFF5C1520)
-val cyber_onErrorContainer = Color(0xFFFFDEE2)
-val cyber_background = Color(0xFF0D0D1A)
-val cyber_onBackground = Color(0xFFE0F0E8)
-val cyber_surface = Color(0xFF141422)
-val cyber_onSurface = Color(0xFFE0F0E8)
-val cyber_surfaceVariant = Color(0xFF1A1A2E)
-val cyber_onSurfaceVariant = Color(0xFF8FA8A0)
-val cyber_outline = Color(0xFF2D3D35)
-val cyber_outlineVariant = Color(0xFF1F2D28)
-val cyber_surfaceContainer = Color(0xFF16162A)
-val cyber_gradientStart = Color(0xFF06D6A0)
-val cyber_gradientEnd = Color(0xFF9B5DE5)
-
-// ─────────────────────────────────────────────
-// 4. OCEAN DEPTH — Deep sea calm
-// ─────────────────────────────────────────────
-val ocean_primary = Color(0xFF2DD4BF)
-val ocean_onPrimary = Color(0xFF003330)
-val ocean_primaryContainer = Color(0xFF0A3D3A)
-val ocean_onPrimaryContainer = Color(0xFFB8FFF5)
-val ocean_secondary = Color(0xFF22D3EE)
-val ocean_onSecondary = Color(0xFF00333A)
-val ocean_secondaryContainer = Color(0xFF0A3D44)
-val ocean_onSecondaryContainer = Color(0xFFB8F8FF)
-val ocean_tertiary = Color(0xFF38BDF8)
-val ocean_onTertiary = Color(0xFF003044)
-val ocean_tertiaryContainer = Color(0xFF0A3A55)
-val ocean_onTertiaryContainer = Color(0xFFD0EFFF)
-val ocean_error = Color(0xFFFB7185)
-val ocean_onError = Color(0xFF3E0A15)
-val ocean_errorContainer = Color(0xFF5C1525)
-val ocean_onErrorContainer = Color(0xFFFFDEE5)
-val ocean_background = Color(0xFF0B1426)
-val ocean_onBackground = Color(0xFFD8F0F0)
-val ocean_surface = Color(0xFF101C2E)
-val ocean_onSurface = Color(0xFFD8F0F0)
-val ocean_surfaceVariant = Color(0xFF162438)
-val ocean_onSurfaceVariant = Color(0xFF7FAAAD)
-val ocean_outline = Color(0xFF253848)
-val ocean_outlineVariant = Color(0xFF1C2D3E)
-val ocean_surfaceContainer = Color(0xFF13202F)
-val ocean_gradientStart = Color(0xFF2DD4BF)
-val ocean_gradientEnd = Color(0xFF22D3EE)
-
-// ─────────────────────────────────────────────
-// 5. SAKURA BLOOM — Soft & elegant pink
-// ─────────────────────────────────────────────
-val sakura_primary = Color(0xFFF472B6)
-val sakura_onPrimary = Color(0xFFFFFFFF)
-val sakura_primaryContainer = Color(0xFFFFE4EF)
-val sakura_onPrimaryContainer = Color(0xFF5C1A35)
-val sakura_secondary = Color(0xFFFB923C)
-val sakura_onSecondary = Color(0xFFFFFFFF)
-val sakura_secondaryContainer = Color(0xFFFFF0E0)
-val sakura_onSecondaryContainer = Color(0xFF5C2D0A)
-val sakura_tertiary = Color(0xFFA78BFA)
-val sakura_onTertiary = Color(0xFFFFFFFF)
-val sakura_tertiaryContainer = Color(0xFFF0E8FF)
-val sakura_onTertiaryContainer = Color(0xFF2D1A52)
-val sakura_error = Color(0xFFDC2626)
-val sakura_onError = Color(0xFFFFFFFF)
-val sakura_errorContainer = Color(0xFFFEE2E2)
-val sakura_onErrorContainer = Color(0xFF5C0A0A)
-val sakura_background = Color(0xFFFFF5F7)
-val sakura_onBackground = Color(0xFF2D1A22)
-val sakura_surface = Color(0xFFFFFFFF)
-val sakura_onSurface = Color(0xFF2D1A22)
-val sakura_surfaceVariant = Color(0xFFFFF0F3)
-val sakura_onSurfaceVariant = Color(0xFF6B4450)
-val sakura_outline = Color(0xFFE8C5D0)
-val sakura_outlineVariant = Color(0xFFF5DEE5)
-val sakura_surfaceContainer = Color(0xFFFFF8FA)
-val sakura_gradientStart = Color(0xFFF472B6)
-val sakura_gradientEnd = Color(0xFFFB923C)
+// Light: warm paper, ink black, same accent family
+val LightVocabColors = VocabColors(
+    bg = Color(0xFFF7F5F0),
+    bgSunken = Color(0xFFEFECE5),
+    raise = Color(0xFFFFFEFB),
+    ink = Color(0xFF171613),
+    ink2 = Color(0xFF5F5D56),
+    ink3 = Color(0xFF918E85),
+    rule = Color(0xFFDEDAD1),
+    rule2 = Color(0xFFCEC9BE),
+    accent = Color(0xFF9A6B17),
+    accentInk = Color(0xFFFFFDF7),
+    accentWash = Color(0x179A6B17), // rgba(154,107,23,.09)
+    danger = Color(0xFFA83A28),
+    sel = Color(0x299A6B17),        // rgba(154,107,23,.16)
+    isDark = false
+)

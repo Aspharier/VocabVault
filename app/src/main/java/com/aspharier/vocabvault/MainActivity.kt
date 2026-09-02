@@ -35,10 +35,16 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val currentTheme by themeViewModel.currentTheme.collectAsState()
+            val textScale by themeViewModel.textScale.collectAsState()
 
-            VocabVaultTheme(appTheme = currentTheme) {
+            VocabVaultTheme(appTheme = currentTheme, textScale = textScale) {
                 // Dynamically update system bars to match theme
-                SystemBarStyleEffect(isDarkTheme = currentTheme.isDark)
+                val isDark = when (currentTheme) {
+                    AppTheme.DARK -> true
+                    AppTheme.LIGHT -> false
+                    AppTheme.SYSTEM -> androidx.compose.foundation.isSystemInDarkTheme()
+                }
+                SystemBarStyleEffect(isDarkTheme = isDark)
 
                 // Fill the entire window with theme background
                 // This eliminates white bleed behind bottom nav

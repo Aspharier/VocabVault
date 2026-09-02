@@ -19,6 +19,9 @@ interface SavedWordDao {
     @Query("DELETE FROM saved_words WHERE  word = :word")
     suspend fun deleteWord(word: String)
 
+    @Query("DELETE FROM saved_words")
+    suspend fun deleteAllWords()
+
     @Query("SELECT EXISTS(SELECT 1 FROM saved_words WHERE word = :word)")
     suspend fun isWordSaved(word: String): Boolean
 

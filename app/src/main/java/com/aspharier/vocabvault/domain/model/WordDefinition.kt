@@ -10,3 +10,15 @@ data class WordDefinition(
     val nextReviewAt: Long = 0L,
     val lastReviewedAt: Long = 0L
 )
+
+data class WordSense(
+    val partOfSpeech: String,
+    val definition: String,
+    val example: String? = null
+)
+
+data class DetailedWordEntry(
+    val word: String,
+    val phonetic: String?,
+    val senses: List<WordSense>
+)

@@ -11,6 +11,8 @@ interface WordRepository {
 
     suspend fun deleteWord(word: String)
 
+    suspend fun deleteAllWords()
+
     suspend fun isWordSaved(word: String): Boolean
 
     fun getWordsDueForReview(currentTime: Long): Flow<List<WordDefinition>>

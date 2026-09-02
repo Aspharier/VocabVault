@@ -13,5 +13,5 @@ data class MeaningDto(
 
 data class DefinitionDto(
     val definition: String,
-    val example: String
+    val example: String? = null
 )

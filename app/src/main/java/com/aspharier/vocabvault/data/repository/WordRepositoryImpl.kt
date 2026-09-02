@@ -47,6 +47,10 @@ class WordRepositoryImpl @Inject constructor(
         dao.deleteWord(word)
     }
 
+    override suspend fun deleteAllWords() {
+        dao.deleteAllWords()
+    }
+
     override suspend fun isWordSaved(word: String): Boolean =
         dao.isWordSaved(word)
 
